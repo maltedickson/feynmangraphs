@@ -298,6 +298,13 @@ generate_feynman_graphs(int vertex_count,
   return feynmans;
 }
 
+bool ends_with(const std::string &s, const std::string ending) {
+  if (s.length() < ending.length()) {
+    return false;
+  }
+  return 0 == s.compare(s.length() - ending.length(), ending.length(), ending);
+}
+
 class SvgGraphRenderer {
 public:
   SvgGraphRenderer(std::string name) : current_graph_idx_(0) {
@@ -320,7 +327,8 @@ public:
 
   void render_to_svg(const std::string &output_path) {
     gvLayout(gvc_, g_, "neato");
-    gvRenderFilename(gvc_, g_, "svg", output_path.c_str());
+    std::string file_type = ends_with(output_path, ".pdf") ? "pdf" : "svg";
+    gvRenderFilename(gvc_, g_, file_type.data(), output_path.c_str());
     gvFreeLayout(gvc_, g_);
   }
 
